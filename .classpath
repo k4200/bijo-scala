@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<classpath>
+<classpathentry kind="src" path="src\test\scala" output="target\scala_2.8.1\test-classes" including="**/*.scala" />
+<classpathentry kind="src" path="src\main\scala" including="**/*.scala" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\test\servlet-api-2.5-20081211.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\test\jetty-util-6.1.22.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\lift-webkit_2.8.1-2.2-RC4.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\test\jetty-6.1.22.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\commons-fileupload-1.2.2.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\slf4j-api-1.6.1.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\h2-1.2.138.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\lift-json_2.8.1-2.2-RC4.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\lift-common_2.8.1-2.2-RC4.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\logback-core-0.9.26.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\mail-1.4.1.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\logback-classic-0.9.26.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\lift-mapper_2.8.1-2.2-RC4.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\paranamer-2.0.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\commons-codec-1.4.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\joda-time-1.6.2.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\lift-util_2.8.1-2.2-RC4.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\htmlparser-1.2.1.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\lift-actor_2.8.1-2.2-RC4.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\test\specs_2.8.1-1.6.6.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\lift-proto_2.8.1-2.2-RC4.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\test\junit-4.5.jar" />
+<classpathentry kind="lib" path="lib_managed\scala_2.8.1\compile\activation-1.1.jar" />
+<classpathentry kind="con" path="org.scala-ide.sdt.launching.SCALA_CONTAINER" />
+<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER" />
+<classpathentry kind="output" path="target\scala_2.8.1\classes" />
+</classpath>

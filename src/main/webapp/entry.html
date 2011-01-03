@@ -1,0 +1,58 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta content="text/html; charset=UTF-8" http-equiv="content-type" />
+    <title>Entry</title>
+  </head>
+  <body class="lift:content_id=entry">
+
+    <!--
+    <div class="lift:show_entry.entry">
+    </div>
+    -->
+
+    <!-- surround... とやることで、ラッパーテンプレートが適用される。 -->
+    <div id="entry" class="lift:surround?with=default;at=content">
+      <!--
+      <l:show_entry.foo />
+      -->
+      <l:show_entry>
+        <entry:field1></entry:field1>,
+        <entry:field2></entry:field2>
+      </l:show_entry>
+      
+
+<!--        <l:show_entry.list>-->
+<!--          <line:title>aa</line:title>,-->
+<!--          <line:overview>bb</line:overview>-->
+<!--        </l:show_entry.list>-->
+
+      <table>
+        <thead>
+        <tr>
+          <th>title</th>
+          <th>overview</th>
+        </tr>
+        </thead>
+        <tbody>
+        <l:show_entry.list>
+          <tr>
+            <td><line:title /></td>
+            <td><line:overview /></td>
+          </tr>
+        </l:show_entry.list>
+        </tbody>
+      </table>
+      <ul>
+        <l:show_entry.list>
+        <li>
+          <line:title>aa</line:title></td>,<line:overview>bb</line:overview>
+        </li>
+        </l:show_entry.list>
+      </ul>
+      
+    </div>
+
+  </body>
+</html>
+
