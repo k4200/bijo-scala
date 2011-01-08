@@ -5,6 +5,7 @@ import _root_.net.liftweb._
 import _root_.net.liftweb.common._
 import _root_.java.util.Date
 import http._
+import mapper._
 import util._
 import Helpers._
 import code.lib._
@@ -34,16 +35,19 @@ class ShowEntry {
   }
   
   def list(in: NodeSeq): NodeSeq = {
-  
-    Entry.findAll.flatMap(entry => {
-      println(new Date() + "," + entry.title + "," + entry.overview)
-      bind("line", in,
-        //TODO method strToBPAssoc in trait BindHelpers is deprecated
-        // -> and --> 
-        "title" -> Text(entry.title), 
-        "overview" -> Text(entry.overview)
-      )
-    })
+    S.param("entry_id") match { 
+   	  case Full (entryId) => NodeSeq.Empty
+      case Empty => {
+        Entry.findAll(NotNullRef(Entry.girl)).flatMap(entry => {
+          println(new Date() + "," + entry.title + "," + entry.overview)
+          bind("line", in,
+            //TODO method strToBPAssoc in trait BindHelpers is deprecated
+            // -> and --> 
+            "title" --> Text(entry.title), 
+            "overview" --> Text(entry.overview)
+          )
+        })
+   	}
   
 //      bind("line", in,
 //        //TODO method strToBPAssoc in trait BindHelpers is deprecated
@@ -51,6 +55,8 @@ class ShowEntry {
 //        "title" -> Text("aaaaa"), 
 //        "overview" -> Text("bbbbbbbbbbb")
 //      )
+    }
+  
   }
   
   def foo(in: NodeSeq): NodeSeq = {
