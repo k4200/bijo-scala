@@ -3,7 +3,10 @@ import de.element34.sbteclipsify._
 
 class LiftProject(info: ProjectInfo) extends DefaultWebProject(info) with Eclipsify {
   val liftVersion = "2.2"
-
+	  
+  //https://repository.jboss.org/nexus/index.html#welcome
+  //val jbossRepo = "JBoss Public" at "https://repository.jboss.org/nexus/content/groups/public"
+  
   // uncomment the following if you want to use the snapshot repo
   // val scalatoolsSnapshot = ScalaToolsSnapshots
 
@@ -19,5 +22,6 @@ class LiftProject(info: ProjectInfo) extends DefaultWebProject(info) with Eclips
     "ch.qos.logback" % "logback-classic" % "0.9.26",
     "org.scala-tools.testing" %% "specs" % "1.6.6" % "test->default",
     "com.h2database" % "h2" % "1.2.138"
+    //"com.sun.media" % "jai_imageio" % "1.1"
   ) ++ super.libraryDependencies
 }

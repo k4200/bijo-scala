@@ -56,6 +56,7 @@ class Girl extends LongKeyedMapper[Girl] with IdPK
   }
 
   private def saveFile(fp: FileParamHolder): Unit = {
+	//TODO ugly code.
     println("*** saveFile ***")
     fp.file match {
       case null => {
@@ -66,11 +67,21 @@ class Girl extends LongKeyedMapper[Girl] with IdPK
       }
       case _ => {
         println("saveFile: default")
-        this.image(fp.file)
+        code.lib.GirlImageHandler.getFormatName(fp.file) match {
+          case Some(format) => {
+            this.image(fp.file)
+            this.imageFormat(format)
+          }
+          case _ => println("invalid file format?")
+        }
       }
     }
   }
 
+  object imageFormat extends MappedString(this, 4) {
+    override def dbDisplay_? = false
+  } 
+  
   // Optional
   object url extends MappedString(this, 150)
   object comment extends MappedTextarea(this, 1000)
