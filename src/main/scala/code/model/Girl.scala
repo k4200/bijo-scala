@@ -72,7 +72,7 @@ class Girl extends LongKeyedMapper[Girl] with IdPK
   }
 
   // Optional
-  object url extends MappedString(this, 20)
+  object url extends MappedString(this, 150)
   object comment extends MappedTextarea(this, 1000)
   
 }

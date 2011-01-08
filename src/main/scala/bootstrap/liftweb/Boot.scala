@@ -44,6 +44,14 @@ class Boot {
       case _ => false}
     ) => false})
 
+    // Register the module for handling girls' images.
+    import code.lib._
+    LiftRules.statelessDispatchTable.append{
+      case Req( "girl" :: "image" :: id :: Nil, _, _ ) => 
+        () => GirlImageHandler.show(id)
+    }
+
+
     // where to search snippet
     LiftRules.addToPackages("code")
 

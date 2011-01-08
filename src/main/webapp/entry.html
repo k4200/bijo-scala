@@ -13,19 +13,18 @@
 
     <!-- surround... とやることで、ラッパーテンプレートが適用される。 -->
     <div id="entry" class="lift:surround?with=default;at=content">
-      <!--
-      <l:show_entry.foo />
-      -->
-      <l:show_entry>
-        <entry:field1></entry:field1>,
-        <entry:field2></entry:field2>
-      </l:show_entry>
+      <!-- http://www.assembla.com/wiki/show/liftweb/Binding_via_CSS_Selectors -->
+      <div class="lift:show_entry show_entry">
+        <table class="entry">
+          <tr><td>title</td><td class="title"></td></tr>
+          <tr><td>overview</td><td class="overview"></td></tr>
+          <tr><td>description</td><td class="description"></td></tr>
+          <tr><td>name</td><td class="girl_name"></td></tr>
+          <tr><td>comment</td><td class="girl_comment_c"></td></tr>
+          <tr><td>image</td><td><img class="girl_image" src="" /></td></tr>
+        </table>
+      </div>
       
-
-<!--        <l:show_entry.list>-->
-<!--          <line:title>aa</line:title>,-->
-<!--          <line:overview>bb</line:overview>-->
-<!--        </l:show_entry.list>-->
 
 <!--      <table>-->
 <!--        <thead>-->
@@ -44,13 +43,9 @@
 <!--        </tbody>-->
 <!--      </table>-->
       
-      <ul>
-        <l:show_entry.list>
-          <li>
-            <line:title></line:title>,
-            <line:overview></line:overview>
-          </li>
-        </l:show_entry.list>
+      <ul class="lift:show_entry.list allentries">
+        <!-- The value of the href attribute is set by "list" method. -->
+        <li class="entry"><a class="link" href=""></a></li> 
       </ul>
       
     </div>

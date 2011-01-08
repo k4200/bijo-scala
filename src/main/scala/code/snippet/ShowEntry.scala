@@ -17,51 +17,48 @@ class ShowEntry {
   import code.model._
   import net.liftweb.mapper.By
 
-  def render(in: NodeSeq): NodeSeq = {
-    S.param("entry_id").map( entry_id =>
-      Entry.find(By(Entry.id, entry_id.toLong)).map(entry =>
-        bind("entry", in,
-          //TODO method strToBPAssoc in trait BindHelpers is deprecated
-          "field1" --> "1", 
-          "field2" --> "2"
-        )
-      ).getOrElse {
-        Text("No entry for the given id " + entry_id)
-      }
-    ).getOrElse {
+  def render = {
+    S.param("entry_id").map( entryId =>
+      (for(entry <- Entry.find(By(Entry.id, entryId.toLong), PreCache(Entry.girl));
+           girl <- entry.girl.obj)
+        yield {
+          ".title *" #> entry.title &
+          ".overview *" #> entry.overview &
+          ".description *" #> entry.description &
+          ".girl_name *" #> girl.name &
+          ".girl_comment_c *" #> girl.url &
+          ".girl_image [src]" #> Text("/girl/image/" + girl.id) 
+       }).getOrElse {
+    	  // In case that an entry doesn't exist for the given ID
+    	  // or girl is null.
+          ".entry *" #> Text("No entry for the given id " + entryId)
+    }).getOrElse {
       // entry_idが渡されない場合は何も表示しない
-      Text("")
+      //".entry *" #> List[NodeSeq]()
+      ".entry *" #> Text("entry_id wasn't passed.")
     }
   }
   
-  def list(in: NodeSeq): NodeSeq = {
-    S.param("entry_id") match { 
-   	  case Full (entryId) => NodeSeq.Empty
+  /**
+   * Shows the list of all entries that a girl is already assigned to.
+   * @return
+   */
+  def list = {
+    S.param("entry_id") match {
       case Empty => {
-        Entry.findAll(NotNullRef(Entry.girl)).flatMap(entry => {
-          println(new Date() + "," + entry.title + "," + entry.overview)
-          bind("line", in,
-            //TODO method strToBPAssoc in trait BindHelpers is deprecated
-            // -> and --> 
-            "title" --> Text(entry.title), 
-            "overview" --> Text(entry.overview)
-          )
-        })
+        val entries = Entry.findAll(NotNullRef(Entry.girl))
+        ".entry *" #> entries.map(entry => 
+          ".link *" #> entry.title &
+          ".link [href]" #> "/entry?entry_id=%s".format(entry.id)
+        )
+      }
+   	  case _ => ".entry *" #> List[NodeSeq]()
    	}
-  
-//      bind("line", in,
-//        //TODO method strToBPAssoc in trait BindHelpers is deprecated
-//        // -> and --> 
-//        "title" -> Text("aaaaa"), 
-//        "overview" -> Text("bbbbbbbbbbb")
-//      )
-    }
-  
   }
   
   def foo(in: NodeSeq): NodeSeq = {
     S.param("girl_id").map(
-      girl_id => Text("id = " + girl_id)
+      girlId => Text("id = " + girlId)
     ).getOrElse {
       Text("girl_id must be specified.")
     }
