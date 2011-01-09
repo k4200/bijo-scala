@@ -24,4 +24,6 @@ class LiftProject(info: ProjectInfo) extends DefaultWebProject(info) with Eclips
     "com.h2database" % "h2" % "1.2.138"
     //"com.sun.media" % "jai_imageio" % "1.1"
   ) ++ super.libraryDependencies
+  
+  //override val jettyPort = 80
 }

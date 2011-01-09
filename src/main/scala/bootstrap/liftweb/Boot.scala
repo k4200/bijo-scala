@@ -68,13 +68,13 @@ class Boot {
         Menu.i("Entry") / "entry"
       ) :::
       Entry.menus :::
-      Girl.menus :::
+      Girl.menus : _*
       
       // more complex because this menu allows anything in the
       // /static path to be visible
-      List(
-        Menu(Loc("Static", Link(List("static"), true, "/static/index"), 
-	       "Static Content"))) : _*
+//      List(
+//        Menu(Loc("Static", Link(List("static"), true, "/static/index"), 
+//	       "Static Content"))) : _*
 	)
 
 	

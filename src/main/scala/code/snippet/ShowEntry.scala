@@ -34,8 +34,8 @@ class ShowEntry {
           ".entry *" #> Text("No entry for the given id " + entryId)
     }).getOrElse {
       // entry_idが渡されない場合は何も表示しない
-      //".entry *" #> List[NodeSeq]()
-      ".entry *" #> Text("entry_id wasn't passed.")
+      ".entry *" #> List[NodeSeq]()
+      //".entry *" #> Text("entry_id wasn't passed.") //Debug
     }
   }
   
