@@ -37,6 +37,9 @@ class Boot {
     Schemifier.schemify(true, Schemifier.infoF _, User)
     Schemifier.schemify(true, Schemifier.infoF _, Entry)
     Schemifier.schemify(true, Schemifier.infoF _, Girl)
+    Schemifier.schemify(true, Schemifier.infoF _, TwitterUser)
+    Schemifier.schemify(true, Schemifier.infoF _, TestMOAuthConsumer)
+    Schemifier.schemify(true, Schemifier.infoF _, TestMOAuthToken)
 
     // allow /console to fall thru for H2 console servlet
     LiftRules.liftRequest.append({case r if (r.path.partPath match {
