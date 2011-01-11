@@ -43,7 +43,7 @@ object TwitterOAuth {
     println("user_id: "     + userId)
     println("screen_name: " + screenName)
 
-    TwitterUser.currentUser match {
+    User.currentUser match {
       case Full(user) => {
         //Save the token.
         user.accessToken.set(accessToken.value)
@@ -69,7 +69,7 @@ object TwitterOAuth {
    * the given user.
    *
    */
-  def tweet(status: String, user: TwitterUser): Unit = {
+  def tweet(status: String, user: User): Unit = {
     if (user.accessToken.get.length() == 0) {
       //TODO redirect to the authorize page.
       println("The user doesn't have an access token.")
@@ -84,7 +84,7 @@ object TwitterOAuth {
   /**
    * Tweets using the given access_token.
    */
-  def tweet(status: String, access_token: Token): Unit = {
+  def tweet(status: String, accessToken: Token): Unit = {
     val http = new Http
 
     //TODO Move these to somewhere
@@ -94,7 +94,7 @@ object TwitterOAuth {
     var out_status = to + " " + hashtag + " " + status
     if (out_status.length > 140) out_status = out_status.substring(0, 139)
 
-    val req = Status.update(out_status, CONSUMER, access_token)
+    val req = Status.update(out_status, CONSUMER, accessToken)
     // Dispatch is difficult to read... What's >| ??
     // http://www.scala-lang.org/node/1981
     val res = http(req >|)

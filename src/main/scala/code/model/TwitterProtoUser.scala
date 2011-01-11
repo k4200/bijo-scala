@@ -4,20 +4,16 @@ import net.liftweb._
 import mapper._
 import common._
 import util._
+import util.Helpers._
 import http._
 import sitemap._
 import proto.{ProtoUser => GenProtoUser}
 import _root_.scala.xml.{ NodeSeq, Text }
 
-class TwitterUser extends LongKeyedMapper[TwitterUser] with IdPK
+trait TwitterProtoUser[T <: TwitterProtoUser[T]] extends LongKeyedMapper[T] with IdPK
 with UserIdAsString {
+  self: T =>
 
-  type T = TwitterUser
-	
-  /**
-   * 
-   */
-  def getSingleton = TwitterUser
   /**
    * Convert the id to a String
    */
@@ -43,9 +39,9 @@ with UserIdAsString {
    * </pre>
    * Borrowed from ProtoUser.
    */  
-  lazy val superUser: MappedBoolean[TwitterUser] = new MySuperUser(this)
+  lazy val superUser: MappedBoolean[T] = new MySuperUser(this)
 
-  protected class MySuperUser(obj: TwitterUser) extends MappedBoolean(obj) {
+  protected class MySuperUser(obj: T) extends MappedBoolean(obj) {
     override def defaultValue = false
   }
   
@@ -90,14 +86,15 @@ with UserIdAsString {
 /**
  * 
  */
-object TwitterUser extends TwitterUser with LongKeyedMetaMapper[TwitterUser] with GenProtoUser {
-  self: TwitterUser =>
+trait MetaTwitterProtoUser[ModelType <: TwitterProtoUser[ModelType]]
+extends LongKeyedMetaMapper[ModelType] with GenProtoUser {
+  self: ModelType =>
   
-  override def dbTableName = "twitter_users"; // define the DB table name
+//  override def dbTableName = "twitter_users"; // define the DB table name
 
   // The code below is taken from
   // net.liftweb.proto.ProtoUser and net.liftweb.mapper.MegaProtoUser
-  type TheUserType = TwitterUser
+  type TheUserType = ModelType
   /**
    * What's a field pointer for the underlying CRUDify
    */
@@ -268,6 +265,12 @@ object TwitterUser extends TwitterUser with LongKeyedMetaMapper[TwitterUser] wit
 //    currentUserId.isDefined
 //  }
   
+  /**
+   * How do we prompt the user for the username.  By default,
+   * it's S.??("email.address"), you can can change it to something else
+   * TODO Add a text to the property files.
+   */
+  override def userNameFieldString: String = S.??("twitter.account")
   
   override def loginXhtml = {
     (<form method="post" action={S.uri}><table><tr><td
@@ -277,10 +280,42 @@ object TwitterUser extends TwitterUser with LongKeyedMetaMapper[TwitterUser] wit
      </form>)
   }
 
-//  import code.lib.TwitterOAuth
-//  override def loginXhtml = {
-//    val url = TwitterOAuth.authorizeUrl
-//    S.redirectTo(url.toString())
-//  }
+  import code.lib.TwitterOAuth
+  override def login = {
+    if (S.post_?) {
+      val url = TwitterOAuth.authorizeUrl
+      S.redirectTo(url.toString())
+      
+//      S.param("username").
+//      flatMap(username => findUserByUserName(username)) match {
+//        case Full(user) if user.validated_? &&
+//          user.testPassword(S.param("password")) => {
+//            logUserIn(user, () => {
+//              S.notice(S.??("logged.in"))
+//
+//              val redir = loginRedirect.is match {
+//                case Full(url) =>
+//                  loginRedirect(Empty)
+//                url
+//                case _ =>
+//                  homePage
+//              }
+//              S.redirectTo(redir)
+//            })
+//          }
+//
+//        case Full(user) if !user.validated_? =>
+//          S.error(S.??("account.validation.error"))
+//
+//        case _ => S.error(S.??("invalid.credentials"))
+//      }
+    } //if
+    
+    
+    bind("user", loginXhtml,
+         "email" -> (<input type="text" name="username"/>),
+         "submit" -> (<input type="submit" value={S.??("log.in")}/>))
+  }
+
 
 }
