@@ -34,12 +34,12 @@ class Boot {
     // Use Lift's Mapper ORM to populate the database
     // you don't need to use Mapper to use Lift... use
     // any ORM you want
-    Schemifier.schemify(true, Schemifier.infoF _, User)
+//    Schemifier.schemify(true, Schemifier.infoF _, User)
     Schemifier.schemify(true, Schemifier.infoF _, Entry)
     Schemifier.schemify(true, Schemifier.infoF _, Girl)
     Schemifier.schemify(true, Schemifier.infoF _, TwitterUser)
-    Schemifier.schemify(true, Schemifier.infoF _, TestMOAuthConsumer)
-    Schemifier.schemify(true, Schemifier.infoF _, TestMOAuthToken)
+//    Schemifier.schemify(true, Schemifier.infoF _, TestMOAuthConsumer)
+//    Schemifier.schemify(true, Schemifier.infoF _, TestMOAuthToken)
 
     // allow /console to fall thru for H2 console servlet
     LiftRules.liftRequest.append({case r if (r.path.partPath match {
@@ -67,7 +67,10 @@ class Boot {
     // Build SiteMap
     def sitemap = SiteMap(
       List(
-        Menu.i("Home") / "index" >> User.AddUserMenusAfter,
+//        Menu.i("Home") / "index" >> User.AddUserMenusUnder,
+        Menu.i("Home") / "index" >> TwitterUser.AddUserMenusUnder,
+//        Menu.i("Home") / "index",
+//        Menu.i("Account") / "dummy" >> User.AddUserMenusUnder,
         Menu.i("Entry") / "entry"
       ) :::
       Entry.menus :::
@@ -82,7 +85,8 @@ class Boot {
 
 	
 	
-    def sitemapMutators = User.sitemapMutator
+//    def sitemapMutators = User.sitemapMutator
+    def sitemapMutators = TwitterUser.sitemapMutator
 
     // set the sitemap.  Note if you don't want access control for
     // each page, just comment this line out.
@@ -100,7 +104,8 @@ class Boot {
     LiftRules.early.append(_.setCharacterEncoding("UTF-8"))
 
     // What is the function to test if a user is logged in?
-    LiftRules.loggedInTest = Full(() => User.loggedIn_?)
+//    LiftRules.loggedInTest = Full(() => User.loggedIn_?)
+    LiftRules.loggedInTest = Full(() => TwitterUser.loggedIn_?)
 
     // Use HTML5 for rendering
     LiftRules.htmlProperties.default.set((r: Req) =>
