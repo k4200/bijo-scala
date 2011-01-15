@@ -7,6 +7,7 @@ import util._
 import util.Helpers._
 import http._
 import sitemap._
+import sitemap.Loc._
 import proto.{ProtoUser => GenProtoUser}
 import _root_.scala.xml.{ NodeSeq, Text }
 
@@ -24,9 +25,15 @@ with UserIdAsString {
   }
   object accessToken extends MappedString(this, 100) { //50?
     override def dbColumnName = "access_token"
+    override def dbDisplay_? = false
   }
   object accessTokenSecret extends MappedString(this, 100) { //43?
 	override def dbColumnName = "access_token_secret"
+    override def dbDisplay_? = false
+  }
+  object sessionId extends MappedString(this, 100) {
+    override def dbColumnName = "session_id"
+    override def dbDisplay_? = false
   }
   
   /**
@@ -244,7 +251,9 @@ extends LongKeyedMetaMapper[ModelType] with GenProtoUser {
 
   // ----------------- menus 
   override val basePath: List[String] = "user_mgt" :: Nil
-  
+  def callbackSuffix = "callback"
+  lazy val callbackPath = thePath(callbackSuffix)
+
   // Only login functionality is needed.
   override def logoutMenuLoc: Box[Menu] = Empty
   override def createUserMenuLoc: Box[Menu] = Empty
@@ -253,13 +262,49 @@ extends LongKeyedMetaMapper[ModelType] with GenProtoUser {
   override def editUserMenuLoc: Box[Menu] = Empty
   override def changePasswordMenuLoc: Box[Menu] = Empty
   override def validateUserMenuLoc: Box[Menu] = Empty
+  def callbackMenuLoc: Box[Menu] =
+    Full(Menu(Loc("Callback", (callbackPath, true), S.??("callback"), callbackMenuLocParams)))
 
+  override lazy val sitemap: List[Menu] =
+    List(loginMenuLoc, logoutMenuLoc, createUserMenuLoc,
+       lostPasswordMenuLoc, resetPasswordMenuLoc,
+       editUserMenuLoc, changePasswordMenuLoc,
+       validateUserMenuLoc, callbackMenuLoc).flatten(a => a)
+  
+  protected def callbackMenuLocParams: List[LocParam[Unit]] =
+    Hidden ::
+    //snarfLastItem is defined in ProtoUser.
+//    Template(() => wrapIt(callback(snarfLastItem))) ::
+    Template(() => callback(S.request)) ::
+//    If(notLoggedIn_? _, S.??("logout.first")) ::
+    Nil
+
+  
+  
 //  override lazy val ItemList: List[MenuItem] =
 //    List(MenuItem(S.??("log.in"), loginPath, false))
+  override lazy val ItemList: List[MenuItem] =
+    List(MenuItem(S.??("sign.up"), signUpPath, false),
+       MenuItem(S.??("log.in"), loginPath, false),
+       MenuItem(S.??("lost.password"), lostPasswordPath, false),
+       MenuItem("", passwordResetPath, false),
+       MenuItem(S.??("change.password"), changePasswordPath, true),
+       MenuItem(S.??("log.out"), logoutPath, true),
+       MenuItem(S.??("edit.profile"), editPath, true),
+       MenuItem("", validateUserPath, false),
+       MenuItem("", callbackPath, false))
 
   
   // ----------------- Methods related to authentication
 //  def loggedIn_? = {
+//    (for(session <- S.session;
+//         user <- User.find(By(User.sessionId, session.uniqueId)))
+//    yield {
+//   	  session.uniqueId == user.uniqueId
+//    }) getOrElse {
+//      false
+//	}
+//    //Original
 //    if(!currentUserId.isDefined)
 //      for(f <- autologinFunc) f()
 //    currentUserId.isDefined
@@ -275,7 +320,6 @@ extends LongKeyedMetaMapper[ModelType] with GenProtoUser {
   override def loginXhtml = {
     (<form method="post" action={S.uri}><table><tr><td
               colspan="2">{S.??("log.in")}</td></tr>
-          <tr><td>{userNameFieldString}</td><td><user:email /></td></tr>
           <tr><td colspan="2"><user:submit /></td></tr></table>
      </form>)
   }
@@ -285,37 +329,52 @@ extends LongKeyedMetaMapper[ModelType] with GenProtoUser {
     if (S.post_?) {
       val url = TwitterOAuth.authorizeUrl
       S.redirectTo(url.toString())
-      
-//      S.param("username").
-//      flatMap(username => findUserByUserName(username)) match {
-//        case Full(user) if user.validated_? &&
-//          user.testPassword(S.param("password")) => {
-//            logUserIn(user, () => {
-//              S.notice(S.??("logged.in"))
-//
-//              val redir = loginRedirect.is match {
-//                case Full(url) =>
-//                  loginRedirect(Empty)
-//                url
-//                case _ =>
-//                  homePage
-//              }
-//              S.redirectTo(redir)
-//            })
-//          }
-//
-//        case Full(user) if !user.validated_? =>
-//          S.error(S.??("account.validation.error"))
-//
-//        case _ => S.error(S.??("invalid.credentials"))
-//      }
-    } //if
-    
-    
+    }
     bind("user", loginXhtml,
          "email" -> (<input type="text" name="username"/>),
          "submit" -> (<input type="submit" value={S.??("log.in")}/>))
   }
 
-
+  import dispatch.oauth._
+  /**
+   * 
+   * @param request
+   * @return
+   */
+  def callback(request: Box[Req]):NodeSeq = {
+	//
+    (for (oauthToken <- S.param("oauth_token");
+          oauthVerifier <- S.param("oauth_verifier"))
+    yield {
+      // access tokenの取得
+      val (accessToken: Token, userId: String, screenName: String)
+        = TwitterOAuth.getAccessToken(oauthToken, oauthVerifier)
+      // Access tokenとAccess secretはユーザーのDBとかに保存しとけばOK
+      val user = saveAccessToken(screenName, accessToken)
+      logUserIn(user, () => {
+    	S.redirectTo(homePage)
+      })
+    }) getOrElse {
+      S.error("invalid token")
+      S.redirectTo(homePage)
+    }
+  }
+  
+  private def saveAccessToken(screenName: String, accessToken: Token): TheUserType = {
+    val user = find(By(twitterAccount, screenName)).getOrElse({
+      val user = createNewUserInstance
+      user.twitterAccount.set(screenName)
+      user
+    })
+    user.accessToken.set(accessToken.value)
+    user.accessTokenSecret.set(accessToken.secret)
+    S.session.map(session => {
+      user.sessionId.set(session.uniqueId)
+    })
+    user.save
+    user
+  }
 }
+
+
+

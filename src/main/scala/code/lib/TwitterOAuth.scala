@@ -34,6 +34,7 @@ object TwitterOAuth {
    * and saves it in the database.
    * @param oauth_token_s
    * @param oauth_verifier
+   * @deprecated 
    */
   def getAndSaveToken(oauthToken:String, oauthVerifier: String):Unit = {
     val (accessToken: Token, userId: String, screenName: String)
