@@ -31,10 +31,6 @@ with UserIdAsString {
 	override def dbColumnName = "access_token_secret"
     override def dbDisplay_? = false
   }
-  object sessionId extends MappedString(this, 100) {
-    override def dbColumnName = "session_id"
-    override def dbDisplay_? = false
-  }
   
   /**
    * The superuser field for the User.  You can override the behavior
@@ -216,8 +212,8 @@ extends LongKeyedMetaMapper[ModelType] with GenProtoUser {
   /**
    * Given an twitter account, find the user
    */
-  protected def findUserByUserName(twitterAccount: String): Box[TheUserType] =
-    find(By(this.twitterAccount, twitterAccount))
+  protected def findUserByUserName(twitterAccountName: String): Box[TheUserType] =
+    find(By(twitterAccount, twitterAccountName))
 
   /**
    * Given a unique id, find the user
@@ -255,7 +251,7 @@ extends LongKeyedMetaMapper[ModelType] with GenProtoUser {
   lazy val callbackPath = thePath(callbackSuffix)
 
   // Only login functionality is needed.
-  override def logoutMenuLoc: Box[Menu] = Empty
+//  override def logoutMenuLoc: Box[Menu] = Empty
   override def createUserMenuLoc: Box[Menu] = Empty
   override def lostPasswordMenuLoc: Box[Menu] = Empty
   override def resetPasswordMenuLoc: Box[Menu] = Empty
@@ -296,20 +292,6 @@ extends LongKeyedMetaMapper[ModelType] with GenProtoUser {
 
   
   // ----------------- Methods related to authentication
-//  def loggedIn_? = {
-//    (for(session <- S.session;
-//         user <- User.find(By(User.sessionId, session.uniqueId)))
-//    yield {
-//   	  session.uniqueId == user.uniqueId
-//    }) getOrElse {
-//      false
-//	}
-//    //Original
-//    if(!currentUserId.isDefined)
-//      for(f <- autologinFunc) f()
-//    currentUserId.isDefined
-//  }
-  
   /**
    * How do we prompt the user for the username.  By default,
    * it's S.??("email.address"), you can can change it to something else
@@ -327,7 +309,7 @@ extends LongKeyedMetaMapper[ModelType] with GenProtoUser {
   import code.lib.TwitterOAuth
   override def login = {
     if (S.post_?) {
-      val url = TwitterOAuth.authorizeUrl
+      val url = TwitterOAuth.authenticateUrl
       S.redirectTo(url.toString())
     }
     bind("user", loginXhtml,
@@ -361,20 +343,14 @@ extends LongKeyedMetaMapper[ModelType] with GenProtoUser {
   }
   
   private def saveAccessToken(screenName: String, accessToken: Token): TheUserType = {
-    val user = find(By(twitterAccount, screenName)).getOrElse({
+    val user = findUserByUserName(screenName).getOrElse({
       val user = createNewUserInstance
       user.twitterAccount.set(screenName)
       user
     })
     user.accessToken.set(accessToken.value)
     user.accessTokenSecret.set(accessToken.secret)
-    S.session.map(session => {
-      user.sessionId.set(session.uniqueId)
-    })
     user.save
     user
   }
 }
-
-
-

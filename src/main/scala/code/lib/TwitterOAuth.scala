@@ -28,6 +28,12 @@ object TwitterOAuth {
     println("req_token =" + reqToken)
     Auth.authorize_url(reqToken).to_uri
   }
+  
+  def authenticateUrl() = {
+    val http = new Http
+    val reqToken = http(Auth.request_token(CONSUMER, REDIRECT_URL))
+    Auth.authenticate_url(reqToken).to_uri
+  }
 
   /**
    * Sends the given request token to Twitter, gets an access token,
