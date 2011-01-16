@@ -25,7 +25,7 @@ If you find any bugs, have questions/comments, feel free to conatact
 me at:  
 kashima [@t m@rk] shibuya [d0t] scala-users [d0t] org
 
----
+# 日本語
 
 Liftの勉強のために、[美女Linux](http://bijo-linux.com/)みたいなのを作ってみました。
 
@@ -40,11 +40,12 @@ sbtプロジェクトを[SbtEclipsify](https://github.com/musk/SbtEclipsify)
 というプラグインでEclipseのプロジェクトに変換しているので、Eclipseな人にも安心。
 
 TODO
+
 * i18n
 * girlsとentriesのリレーションの変更
 
 以下のURLで動かしてます（落ちてる場合もあります）。  
-http://bijo.shibuya.scala-users.org:8080/
+[http://bijo.shibuya.scala-users.org:8080/](http://bijo.shibuya.scala-users.org:8080/)
 
 ご意見等はこちらのメールアドレスまで。  
 kashima [あっとまーく] shibuya [ドット] scala-users [。] org
