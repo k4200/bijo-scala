@@ -78,9 +78,14 @@ class ShowEntry {
   //--------------------------------------------------------
   import scala.util.Random
   def random = {
-	val entries = Entry.findAll(NotNullRef(Entry.girl))
-	val entry = entries(Random.nextInt(entries.length))
-	showEntry(entry) &
-    ".link [href]" #> "/entry?entry_id=%s".format(entry.id)
+    val entries = Entry.findAll(NotNullRef(Entry.girl))
+    val length = entries.length
+    if(length != 0) {
+      val entry = entries(Random.nextInt(entries.length))
+      showEntry(entry) &
+      ".link [href]" #> "/entry?entry_id=%s".format(entry.id)
+    } else {
+      showNoEntry
+    }
   }
 }
