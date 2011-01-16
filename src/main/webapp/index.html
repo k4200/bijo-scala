@@ -6,12 +6,24 @@
   </head>
   <body class="lift:content_id=main">
     <div id="main" class="lift:surround?with=default;at=content">
-      <h2><span class="lift:Loc.hello_world"></h2>
+      <h2>Welcome to 美女 Scala.</h2>
       <p>
         <span class="lift:helloWorld.howdy">
-          Welcome to your Lift app at <span id="time">Time goes here</span>!
+          Hi <span id="yourname">there</span>.
+          This site shows a scala command/class/method/feature with an image of a cute girl
+          so that you can remember it.
         </span>
       </p>
+      
+      <div class="lift:show_entry.random show_random_entry">
+        <table class="entry">
+          <tr><td>title</td><td><a class="link" href=""><span class="title"></span></a></td></tr>
+          <tr><td>name</td><td class="girl_name"></td></tr>
+          <tr><td>comment</td><td class="girl_comment_c"></td></tr>
+          <tr><td>image</td><td><img class="girl_image" src="" /></td></tr>
+        </table>
+      </div>
+      
     </div>
   </body>
 </html>

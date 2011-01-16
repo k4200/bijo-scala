@@ -6,11 +6,6 @@
   </head>
   <body class="lift:content_id=entry">
 
-    <!--
-    <div class="lift:show_entry.entry">
-    </div>
-    -->
-
     <!-- surround... とやることで、ラッパーテンプレートが適用される。 -->
     <div id="entry" class="lift:surround?with=default;at=content">
       <!-- http://www.assembla.com/wiki/show/liftweb/Binding_via_CSS_Selectors -->
@@ -23,6 +18,7 @@
           <tr><td>comment</td><td class="girl_comment_c"></td></tr>
           <tr><td>image</td><td><img class="girl_image" src="" /></td></tr>
         </table>
+        <a href="/entry" class="tolist">Back to the list</a>
       </div>
       
 
@@ -47,7 +43,6 @@
         <!-- The value of the href attribute is set by "list" method. -->
         <li class="entry"><a class="link" href=""></a></li> 
       </ul>
-      
     </div>
 
   </body>

@@ -17,10 +17,29 @@ class ShowEntry {
   import code.model._
   import net.liftweb.mapper.By
 
-  def render = {
-    S.param("entry_id").map( entryId =>
-      (for(entry <- Entry.find(By(Entry.id, entryId.toLong), PreCache(Entry.girl));
-           girl <- entry.girl.obj)
+  def render: CssBindFunc = {
+    S.param("entry_id").map( entryId => {
+      try {
+        showEntry(entryId.toLong)
+      } catch {
+    	case e:NumberFormatException => showNoEntry
+      }
+    }).getOrElse {
+      // entry_idが渡されない場合は何も表示しない
+      showNoEntry
+      //".entry *" #> Text("entry_id wasn't passed.") //Debug
+    }
+  }
+  
+  private def showEntry(entryId: Long): CssBindFunc = {
+    Entry.find(By(Entry.id, entryId), PreCache(Entry.girl)) match {
+      case Full(entry) => showEntry(entry)
+      case _ => ".entry *" #> Text("No entry for the given id " + entryId)
+    }
+  }
+  
+  private def showEntry(entry: Entry): CssBindFunc = {
+      (for(girl <- entry.girl.obj)
         yield {
           ".title *" #> entry.title &
           ".overview *" #> entry.overview &
@@ -29,21 +48,21 @@ class ShowEntry {
           ".girl_comment_c *" #> girl.url &
           ".girl_image [src]" #> Text("/girl/image/" + girl.id) 
        }).getOrElse {
-    	  // In case that an entry doesn't exist for the given ID
-    	  // or girl is null.
-          ".entry *" #> Text("No entry for the given id " + entryId)
-    }).getOrElse {
-      // entry_idが渡されない場合は何も表示しない
-      ".entry *" #> List[NodeSeq]()
-      //".entry *" #> Text("entry_id wasn't passed.") //Debug
-    }
+          ".entry *" #> Text("The entry doesn't have a girl's info yet. Entry ID = " + entry.id)
+      }
   }
   
+  private def showNoEntry: CssBindFunc = {
+    ".entry *" #> List[NodeSeq]() &
+    ".tolist *" #> List[NodeSeq]()
+  }
+  
+  //--------------------------------------------------------
   /**
    * Shows the list of all entries that a girl is already assigned to.
    * @return
    */
-  def list = {
+  def list: CssBindFunc = {
     S.param("entry_id") match {
       case Empty => {
         val entries = Entry.findAll(NotNullRef(Entry.girl))
@@ -56,11 +75,12 @@ class ShowEntry {
    	}
   }
   
-  def foo(in: NodeSeq): NodeSeq = {
-    S.param("girl_id").map(
-      girlId => Text("id = " + girlId)
-    ).getOrElse {
-      Text("girl_id must be specified.")
-    }
+  //--------------------------------------------------------
+  import scala.util.Random
+  def random = {
+	val entries = Entry.findAll(NotNullRef(Entry.girl))
+	val entry = entries(Random.nextInt(entries.length))
+	showEntry(entry) &
+    ".link [href]" #> "/entry?entry_id=%s".format(entry.id)
   }
 }
