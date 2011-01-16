@@ -27,7 +27,20 @@ class Girl extends LongKeyedMapper[Girl] with IdPK
   def getSingleton = Girl
 
   object name extends MappedString(this, 20)
-  object dateOfBirth extends MappedDateTime(this)
+  
+  object dateOfBirth extends MappedDate(this) {
+    import java.text.{SimpleDateFormat, ParseException}
+    import java.util.Date
+    val dateFormat = new SimpleDateFormat("yyyy/MM/dd")
+    override def format(d: Date): String = dateFormat.format(is)
+    override def parse(s: String): Box[Date] = {
+      try {
+        Full(dateFormat.parse(s))
+      } catch {
+        case e: ParseException => Empty 
+      }
+    }
+  } 
   
   // 以下をコメントアウトするとEntry側にエラーが出る
 //  protected object entries
