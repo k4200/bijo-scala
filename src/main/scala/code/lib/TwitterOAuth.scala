@@ -94,12 +94,7 @@ object TwitterOAuth {
   def tweet(status: String, accessToken: Token): Unit = {
     val http = new Http
 
-    //TODO Move these to somewhere
-    val to = "@shibuyascala"
-    val hashtag = "#rpscala009"
-
-    var out_status = to + " " + hashtag + " " + status
-    if (out_status.length > 140) out_status = out_status.substring(0, 139)
+    val out_status = if (status.length > 140) status.substring(0, 139) else status
 
     val req = Status.update(out_status, CONSUMER, accessToken)
     // Dispatch is difficult to read... What's >| ??
