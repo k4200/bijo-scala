@@ -14,7 +14,7 @@ object GirlImageHandler {
   def show(id: String): Box[LiftResponse] = {
 	println("GrilImageHandler.show is being called.")
 	Girl.find(By(Girl.id, id.toLong)) match {
-      case Full(girl) if (girl.image.dbNotNull_?) => {
+      case Full(girl) if (girl.imageFormat.is != null) => {
         val headers = ("Content-type" -> ("image/" + girl.imageFormat.toLowerCase)) ::
           ("Cache-Control" -> "no-store") ::
           ("Pragma", "no-cache") ::
