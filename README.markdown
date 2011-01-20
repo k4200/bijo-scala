@@ -2,7 +2,8 @@
 
 This small web application is "inspired" by [Bijo-Linux](http://bijo-linux.com/),
 which  shows a girl's photo with a Linux command, which (I believe)
-changes every day.
+changes every day. After you login with your Twitter account, you can post
+entries and images.
 
 I started it just for fun and my learning of Scala and Lift.
 
@@ -11,10 +12,10 @@ have done in Scala and Lift, such as image upload, CRUD, and so on.
 It also uses some new features introduced in Lift 2.2, such as CSS
 selectors and ... what else? So, it might be of some use for newbies.
 
-This is a sbt project, which you should be used to if you're a
-Scala programmer, and also an Eclipse project. .project was made
+This is an sbt project, which you should be used to if you're a
+Scala programmer, and also an Eclipse project. ".project" was made
 by a cool program called SbtEclipsify.  
-https://github.com/musk/SbtEclipsify
+[https://github.com/musk/SbtEclipsify](https://github.com/musk/SbtEclipsify)
 
 TODO
 
@@ -28,6 +29,7 @@ kashima [@t m@rk] shibuya [d0t] scala-users [d0t] org
 # 日本語
 
 Liftの勉強のために、[美女Linux](http://bijo-linux.com/)みたいなのを作ってみました。
+ATNDみたいにTwitterアカウントを使ってログインすると、エントリとか画像を投稿できます。
 
 Lift 2.2の新機能とかもちょこちょこ使ってます。その他、以下のような事もやってるので、
 Lift初心者の方には参考になるかも。
